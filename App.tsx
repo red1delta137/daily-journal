@@ -1,31 +1,40 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import * as eva from '@eva-design/eva';
-import { ApplicationProvider } from '@ui-kitten/components';
-import { Card } from '@ui-kitten/components';
+import { ApplicationProvider, BottomNavigation, BottomNavigationTab } from '@ui-kitten/components';
 import TodaysLog from './views/TodaysLog';
-import { SafeAreaView } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Settings from './views/Settings'
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator, BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
 export default function App() {
 
-
   return (
-    <ApplicationProvider {...eva} theme={eva.light}>
-      <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-        <KeyboardAwareScrollView
-          contentContainerStyle={styles.scrollContainer}
-          extraScrollHeight={24}
-          enableOnAndroid
-          keyboardOpeningTime={0}
-        >
-          <Card style={styles.card}>
-            <TodaysLog />
-          </Card>
-        </KeyboardAwareScrollView>
-      </SafeAreaView>
-    </ApplicationProvider >
+    <NavigationContainer>
+      <ApplicationProvider {...eva} theme={eva.light}>
+        <TabNavigator />
+      </ApplicationProvider>
+    </NavigationContainer>
   );
 }
+
+const { Navigator, Screen } = createBottomTabNavigator();
+
+const BottomTabBar = ({ navigation, state }: BottomTabBarProps) => (
+  <BottomNavigation
+    style={styles.bottomNavigation}
+    selectedIndex={state.index}
+    onSelect={index => navigation.navigate(state.routeNames[index])}>
+    <BottomNavigationTab title='TODAY' />
+    <BottomNavigationTab title='SETTINGS' />
+  </BottomNavigation>
+);
+
+const TabNavigator = () => (
+  <Navigator tabBar={props => <BottomTabBar {...props} />}>
+    <Screen name='Daily Log' component={TodaysLog} />
+    <Screen name='Settings' component={Settings} />
+  </Navigator>
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -40,12 +49,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',         // optional: keep it horizontally centered
     paddingTop: 50,               // optional: add some spacing from status bar
   },
-  card: {
-    alignSelf: 'stretch',
-    marginLeft: 16,
-    marginRight: 16
-  },
-  scrollContainer: {
-    padding: 16,
+  bottomNavigation: {
+    marginVertical: 8,
   }
 });

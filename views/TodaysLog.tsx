@@ -1,8 +1,9 @@
 import React from 'react';
 import { View, StyleSheet, Keyboard, Alert } from 'react-native';
 import { Text, Card, Input, Button, Divider } from '@ui-kitten/components';
-import {setItem, getItem, getAllEntries} from "../backend/storage";
-
+import { setItem, getItem, getAllEntries } from "../backend/storage";
+import { SafeAreaView } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default function TodaysLog() {
 
@@ -11,29 +12,36 @@ export default function TodaysLog() {
     const [lows, setLows] = React.useState('');
     const emojis = ["😞", "😐", "🙂", "😊", "🤩"];
     const [selected, setSelected] = React.useState<number | null>(null);
-    const todayKey = `journal:${new Date().toISOString().slice(0,10)}`;
+    const todayKey = `journal:${new Date().toISOString().slice(0, 10)}`;
 
     async function saveEntry() {
-        
+
         const entry = {
             highs,
             lows,
             mood: selected
         };
 
-        const todayKey = `journal:${new Date().toISOString().slice(0,10)}`
+        const todayKey = `journal:${new Date().toISOString().slice(0, 10)}`
         await setItem(todayKey, entry);
         console.log("Saving entry:", entry);
         Alert.alert("Saving entry", JSON.stringify(entry));
     }
 
     async function clearForm() {
-        const all = await getAllEntries();
-        console.log("Entries: ", all);
+        setHighs("");
+        setLows("");
     }
 
-
     return (
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+        <KeyboardAwareScrollView
+          contentContainerStyle={styles.scrollContainer}
+          extraScrollHeight={24}
+          enableOnAndroid
+          keyboardOpeningTime={0}
+        >
+        <Card style={styles.card}>
         <View style={styles.row}>
             <Text style={styles.text} category='h1'>TODAY</Text>
             <Text style={styles.date} category='p1'>{today}</Text>
@@ -46,7 +54,12 @@ export default function TodaysLog() {
                         style={styles.emojiButton}
                         onPress={() => setSelected(idx)}
                     >
-                        {emoji}
+                        <Text
+                            style={{ fontSize: 28, lineHeight: 32 }}
+                            allowFontScaling={false}
+                        >
+                            {emoji}
+                        </Text>
                     </Button>
                 ))}
             </View>
@@ -82,6 +95,9 @@ export default function TodaysLog() {
                 <Button size='large' onPress={saveEntry}>SAVE</Button>
             </View>
         </View>
+        </Card>
+        </KeyboardAwareScrollView>
+        </SafeAreaView>
     );
 }
 
@@ -96,22 +112,21 @@ const styles = StyleSheet.create({
         marginTop: 5,
         fontSize: 24
     },
-    card: {
-        marginTop: 20
-    },
     xlight: {
         marginBottom: 3,
         fontSize: 24
     },
     emojiRow: {
         flexDirection: "row",
-        justifyContent: "space-between", 
+        justifyContent: "space-between",
         marginVertical: 8,
         marginTop: 20
     },
     emojiButton: {
         flex: 1,
         marginHorizontal: 4,
+        minHeight: 56,
+        paddingVertical: 0
     },
     footerControl: {
         marginHorizontal: 2,
@@ -119,5 +134,14 @@ const styles = StyleSheet.create({
         justifyContent: "flex-end",
         marginTop: 20,
         gap: 8
-      },
+    },
+    card: {
+        alignSelf: 'stretch',
+        marginLeft: 16,
+        marginRight: 16,
+        marginTop: 20
+    },
+  scrollContainer: {
+    padding: 16,
+  }
 });
