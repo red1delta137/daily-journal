@@ -1,7 +1,9 @@
-import { Text } from '@ui-kitten/components';
+import { View } from 'react-native';
 
 export default function Settings() {
     return(
-        <Text>Settings</Text>
+        <View>
+
+        </View>
     )
 }

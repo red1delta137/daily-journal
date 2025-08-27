@@ -2,7 +2,8 @@ import { StyleSheet } from 'react-native';
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider, BottomNavigation, BottomNavigationTab } from '@ui-kitten/components';
 import TodaysLog from './views/TodaysLog';
-import Settings from './views/Settings'
+import Settings from './views/Settings';
+import History from './views/History';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator, BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
@@ -11,7 +12,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <ApplicationProvider {...eva} theme={eva.light}>
-        <TabNavigator />
+        <TabNavigator/>
       </ApplicationProvider>
     </NavigationContainer>
   );
@@ -24,13 +25,15 @@ const BottomTabBar = ({ navigation, state }: BottomTabBarProps) => (
     style={styles.bottomNavigation}
     selectedIndex={state.index}
     onSelect={index => navigation.navigate(state.routeNames[index])}>
-    <BottomNavigationTab title='TODAY' />
-    <BottomNavigationTab title='SETTINGS' />
+    <BottomNavigationTab title='HISTORY'/>
+    <BottomNavigationTab title='TODAY'/>
+    <BottomNavigationTab title='SETTINGS'/>
   </BottomNavigation>
 );
 
 const TabNavigator = () => (
   <Navigator tabBar={props => <BottomTabBar {...props} />}>
+    <Screen name='History' component={History}/>
     <Screen name='Daily Log' component={TodaysLog} />
     <Screen name='Settings' component={Settings} />
   </Navigator>
@@ -39,7 +42,7 @@ const TabNavigator = () => (
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#aaa',
     alignItems: 'stretch',
     justifyContent: 'flex-start',
   },
@@ -50,6 +53,6 @@ const styles = StyleSheet.create({
     paddingTop: 50,               // optional: add some spacing from status bar
   },
   bottomNavigation: {
-    marginVertical: 8,
+    // marginVertical: 8,
   }
 });
